@@ -117,6 +117,43 @@ class StableDiffusionAITPipeline(StableDiffusionPipeline):
     ):
         mod = Model(os.path.join(workdir, model_name, "test.so"))
         return mod
+    
+    # def unet_inference(self, latent_model_input, timesteps, encoder_hidden_states):
+    #     exe_module = self.unet_ait_exe
+    #     latent_model_input_0 = torch.unsqueeze(latent_model_input[0], dim=0)
+    #     latent_model_input_1 = torch.unsqueeze(latent_model_input[1], dim=0)
+    #     timesteps_0 = timesteps.expand(latent_model_input_0.shape[0])
+    #     timesteps_1 = timesteps.expand(latent_model_input_1.shape[0])
+    #     encoder_hidden_states_0 = torch.unsqueeze(encoder_hidden_states[0], dim=0)
+    #     encoder_hidden_states_1 = torch.unsqueeze(encoder_hidden_states[1], dim=0)
+    #     ys_0 = []
+    #     ys_1 = []
+    #     num_ouputs = len(exe_module.get_output_name_to_index_map())
+    #     for i in range(num_ouputs):
+    #         shape = exe_module.get_output_maximum_shape(i)
+    #         ys_0.append(torch.empty(shape).cuda().half())
+    #         ys_1.append(torch.empty(shape).cuda().half())
+    #     inputs_0 = {
+    #         "input0": latent_model_input_0.permute((0, 2, 3, 1))
+    #             .contiguous()
+    #             .cuda()
+    #             .half(),
+    #         "input1": timesteps_0.cuda().half(),
+    #         "input2": encoder_hidden_states_0.cuda().half(),
+    #         }
+    #     inputs_1 = {
+    #         "input0": latent_model_input_1.permute((0, 2, 3, 1))
+    #         .contiguous()
+    #         .cuda()
+    #         .half(),
+    #         "input1": timesteps_1.cuda().half(),
+    #         "input2": encoder_hidden_states_1.cuda().half(),
+    #     }
+    #     exe_module.run_with_tensors(inputs_0, ys_0, graph_mode=False)
+    #     exe_module.run_with_tensors(inputs_1, ys_1, graph_mode=False)
+    #     noise_pred_0 = ys_0[0].permute((0, 3, 1, 2)).float()
+    #     noise_pred_1 = ys_1[0].permute((0, 3, 1, 2)).float()
+    #     return torch.cat((noise_pred_0, noise_pred_1))
 
     def unet_inference(self, latent_model_input, timesteps, encoder_hidden_states):
         exe_module = self.unet_ait_exe
@@ -317,7 +354,7 @@ class StableDiffusionAITPipeline(StableDiffusionPipeline):
         # for 1-to-1 results reproducibility with the CompVis implementation.
         # However this currently doesn't work in `mps`.
         latents_device = "cpu" if self.device.type == "mps" else self.device
-        latents_shape = (batch_size, self.unet.in_channels, height // 8, width // 8)
+        latents_shape = (batch_size, self.unet.config.in_channels, height // 8, width // 8)
         if latents is None:
             latents = torch.randn(
                 latents_shape,
@@ -402,7 +439,7 @@ class StableDiffusionAITPipeline(StableDiffusionPipeline):
         image = image.cpu().permute(0, 2, 3, 1).numpy()
 
         # run safety checker
-        if self.safety_checker is not None:
+        if False and self.safety_checker is not None:
             safety_checker_input = self.feature_extractor(
                 self.numpy_to_pil(image), return_tensors="pt"
             ).to(self.device)

@@ -72,9 +72,9 @@ def compile_unet(
     # set AIT parameters
     pt_mod = pt_mod.eval()
     params_ait = map_unet_params(pt_mod, dim)
-    # batch_size = IntVar(values=[1, 8], name="batch_size")
-    height_d = IntVar(values=[32, 64], name="height")
-    width_d = IntVar(values=[32, 64], name="width")
+    batch_size = IntVar(values=[1, 4], name="batch_size")
+    height_d = IntVar(values=[32, 128], name="height")
+    width_d = IntVar(values=[32, 128], name="width")
 
     latent_model_input_ait = Tensor(
         [batch_size, height_d, width_d, 4], name="input0", is_input=True

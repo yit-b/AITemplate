@@ -76,7 +76,7 @@ def compile_diffusers(
     # UNet
     compile_unet(
         pipe.unet,
-        batch_size=batch_size * 2,
+        batch_size=batch_size*2,
         width=ww,
         height=hh,
         use_fp16_acc=use_fp16_acc,

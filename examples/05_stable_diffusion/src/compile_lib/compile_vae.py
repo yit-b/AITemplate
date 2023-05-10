@@ -123,9 +123,9 @@ def compile_vae(
         latent_channels=latent_channels,
         sample_size=sample_size,
     )
-    # batch_size = IntVar(values=[1, 8], name="batch_size")
-    height_d = IntVar(values=[32, 64], name="height")
-    width_d = IntVar(values=[32, 64], name="width")
+    batch_size = IntVar(values=[1, 2], name="batch_size")
+    height_d = IntVar(values=[32, 128], name="height")
+    width_d = IntVar(values=[32, 128], name="width")
 
     ait_input = Tensor(
         shape=[batch_size, height_d, width_d, latent_channels],
