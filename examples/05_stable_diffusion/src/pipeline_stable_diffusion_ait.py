@@ -402,7 +402,7 @@ class StableDiffusionAITPipeline(StableDiffusionPipeline):
         image = image.cpu().permute(0, 2, 3, 1).numpy()
 
         # run safety checker
-        if False and self.safety_checker is not None:
+        if self.safety_checker is not None:
             safety_checker_input = self.feature_extractor(
                 self.numpy_to_pil(image), return_tensors="pt"
             ).to(self.device)
