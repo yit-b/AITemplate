@@ -117,43 +117,6 @@ class StableDiffusionAITPipeline(StableDiffusionPipeline):
     ):
         mod = Model(os.path.join(workdir, model_name, "test.so"))
         return mod
-    
-    # def unet_inference(self, latent_model_input, timesteps, encoder_hidden_states):
-    #     exe_module = self.unet_ait_exe
-    #     latent_model_input_0 = torch.unsqueeze(latent_model_input[0], dim=0)
-    #     latent_model_input_1 = torch.unsqueeze(latent_model_input[1], dim=0)
-    #     timesteps_0 = timesteps.expand(latent_model_input_0.shape[0])
-    #     timesteps_1 = timesteps.expand(latent_model_input_1.shape[0])
-    #     encoder_hidden_states_0 = torch.unsqueeze(encoder_hidden_states[0], dim=0)
-    #     encoder_hidden_states_1 = torch.unsqueeze(encoder_hidden_states[1], dim=0)
-    #     ys_0 = []
-    #     ys_1 = []
-    #     num_ouputs = len(exe_module.get_output_name_to_index_map())
-    #     for i in range(num_ouputs):
-    #         shape = exe_module.get_output_maximum_shape(i)
-    #         ys_0.append(torch.empty(shape).cuda().half())
-    #         ys_1.append(torch.empty(shape).cuda().half())
-    #     inputs_0 = {
-    #         "input0": latent_model_input_0.permute((0, 2, 3, 1))
-    #             .contiguous()
-    #             .cuda()
-    #             .half(),
-    #         "input1": timesteps_0.cuda().half(),
-    #         "input2": encoder_hidden_states_0.cuda().half(),
-    #         }
-    #     inputs_1 = {
-    #         "input0": latent_model_input_1.permute((0, 2, 3, 1))
-    #         .contiguous()
-    #         .cuda()
-    #         .half(),
-    #         "input1": timesteps_1.cuda().half(),
-    #         "input2": encoder_hidden_states_1.cuda().half(),
-    #     }
-    #     exe_module.run_with_tensors(inputs_0, ys_0, graph_mode=False)
-    #     exe_module.run_with_tensors(inputs_1, ys_1, graph_mode=False)
-    #     noise_pred_0 = ys_0[0].permute((0, 3, 1, 2)).float()
-    #     noise_pred_1 = ys_1[0].permute((0, 3, 1, 2)).float()
-    #     return torch.cat((noise_pred_0, noise_pred_1))
 
     def unet_inference(self, latent_model_input, timesteps, encoder_hidden_states):
         exe_module = self.unet_ait_exe
